@@ -1,9 +1,21 @@
 const fs = require('fs');
 const path = require('path');
-const {stdin} = process;
+const {stdin, stdout} = process;
 
-console.log('Привет!');
-fs.writeFile(path.join(__dirname, 'new-text.txt'));
+const output = fs.createWriteStream(path.join(__dirname, 'new-text.txt'), 'utf-8');
 
+stdout.write('Привет! Ваш текст...\n');
 
-stdin.write()
+process.on('SIGINT', () => {
+        console.log('Пока');
+        process.exit();
+});
+
+stdin.on('data', data => {
+    if(data.toString().trim() === "exit"){
+        console.log('Пока');
+        process.exit();
+    }
+});
+
+stdin.on('data', data => output.write(data, 'utf-8'));
