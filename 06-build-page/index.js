@@ -1,30 +1,30 @@
 const fs = require('fs');
 const path = require('path');
 
-//const pathMainFolder = path.join(__dirname, 'assets');
 const pathNewFolder = path.join(__dirname, 'project-dist');
 
 fs.mkdir(pathNewFolder, { recursive: true }, (err) => {
   if (err) console.log(err);
 });
 
-/*const obj = fs.promises.readdir(pathMainFolder);
+//html
+/*
+const pathNewHTML = path.join(__dirname, 'project-dist', 'index.html');
+const template = path.join(__dirname, 'template.html');
+const components = path.join(__dirname, 'components');
 
-obj.then(files => files.forEach(file => {
+const objHtml = fs.promises.readdir(template, {withFileTypes: true});
+objHtml.then(files => files.forEach(file => {
 
-  const pathMainFile = path.resolve(pathMainFolder, file);
-  const pathNewFile = path.resolve(pathNewFolder, file);
+}))
 
-  fs.promises.copyFile(pathMainFile, pathNewFile);
-})
-);*/
-
+*/
 //css
 
-const pathNewFile = path.join(__dirname, 'project-dist', 'styles.css');
-const pathMainFolder = path.join(__dirname, 'styles');
+const pathNewFileCSS = path.join(__dirname, 'project-dist', 'styles.css');
+const pathMainFolderCSS = path.join(__dirname, 'styles');
 
-const obj = fs.promises.readdir(pathMainFolder, {withFileTypes: true});
+const obj = fs.promises.readdir(pathMainFolderCSS, {withFileTypes: true});
 
 
 obj.then(files => files.forEach(file => {
@@ -35,12 +35,39 @@ obj.then(files => files.forEach(file => {
 
     if (ext === '.css') {
       const input = fs.createReadStream(pathFile, 'utf-8');
-      const output = fs.createWriteStream(pathNewFile, 'utf-8');
+      const output = fs.createWriteStream(pathNewFileCSS, 'utf-8');
 
       input.on('data', data => {
         output.write(data.toString());
       });
     }
   }
+})
+);
+
+//assets
+
+const pathMainFolder = path.join(__dirname, 'assets');
+const pathNewAssets = path.join(__dirname, 'project-dist', 'assets');
+
+fs.mkdir(pathNewAssets, { recursive: true }, (err) => {
+  if (err) console.log(err);
+});
+
+const objAssets = fs.promises.readdir(pathMainFolder);
+
+objAssets.then(files => files.forEach(file => {
+  if(file.isFile()) {
+    const pathMainFile = path.resolve(pathMainFolder, file.name);
+    const pathNewFile = path.resolve(pathNewAssets, file.name);
+    fs.promises.copyFile(pathMainFile, pathNewFile);
+  }
+
+  if(file.isDirectory()) {
+    const pathMain = path.resolve(__dirname, 'assets', file.name);
+    const pathNew = path.resolve(__dirname, 'project-dist', 'assets', file.name);
+    fs.promises.copyFile(pathMain, pathNew);
+  }
+
 })
 );
