@@ -5,7 +5,7 @@ const pathMainFolder = path.join(__dirname, 'files');
 const pathNewFolder = path.join(__dirname, 'files-copy');
 
 fs.mkdir(pathNewFolder, { recursive: true }, (err) => {
-    if (err) console.log(err);
+  if (err) console.log(err);
 });
 
 const obj = fs.promises.readdir(pathMainFolder);
